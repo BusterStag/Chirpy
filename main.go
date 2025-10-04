@@ -32,6 +32,7 @@ func main() {
 	if platform == "" {
 		log.Fatal("PLATFORM must be set")
 	}
+	log.Println("postgres://busterstag:@localhost:5432/chirpy?sslmode=disable", os.Getenv("postgres://busterstag:@localhost:5432/chirpy?sslmode=disable"))
 
 	dbConn, err := sql.Open("postgres", dbURL)
 	if err != nil {
