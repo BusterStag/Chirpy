@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -19,7 +17,6 @@ func (cfg *apiConfig) handlerRefresh(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Couldn't find token", err)
 		return
 	}
-	fmt.Printf(refreshToken)
 
 	user, err := cfg.db.GetUserFromRefreshToken(r.Context(), refreshToken)
 	if err != nil {
@@ -40,11 +37,6 @@ func (cfg *apiConfig) handlerRefresh(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, response{
 		Token: accessToken,
 	})
-
-	// go
-	log.Printf("Auth raw: %q", r.Header.Get("Authorization"))
-	tok, err := auth.GetBearerToken(r.Header)
-	log.Printf("Parsed token: %q err: %v", tok, err)
 }
 
 func (cfg *apiConfig) handlerRevoke(w http.ResponseWriter, r *http.Request) {

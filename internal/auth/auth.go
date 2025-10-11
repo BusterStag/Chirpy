@@ -17,7 +17,7 @@ import (
 type TokenType string
 
 const (
-	//TokenTypeAccess -
+	// TokenTypeAccess -
 	TokenTypeAccess TokenType = "chirpy-access"
 )
 
@@ -91,15 +91,17 @@ func ValidateJWT(tokenString, tokenSecret string) (uuid.UUID, error) {
 }
 
 // GetBearerToken -
-
-// go
-func GetBearerToken(h http.Header) (string, error) {
-	v := strings.TrimSpace(h.Get("Authorization"))
-	parts := strings.Fields(v)
-	if len(parts) != 2 || !strings.EqualFold(parts[0], "Bearer") || strings.TrimSpace(parts[1]) == "" {
-		return "", fmt.Errorf("malformed authorization header")
+func GetBearerToken(headers http.Header) (string, error) {
+	authHeader := headers.Get("Authorization")
+	if authHeader == "" {
+		return "", ErrNoAuthHeaderIncluded
 	}
-	return parts[1], nil
+	splitAuth := strings.Split(authHeader, " ")
+	if len(splitAuth) < 2 || splitAuth[0] != "Bearer" {
+		return "", errors.New("malformed authorization header")
+	}
+
+	return splitAuth[1], nil
 }
 
 // MakeRefreshToken makes a random 256 bit token
